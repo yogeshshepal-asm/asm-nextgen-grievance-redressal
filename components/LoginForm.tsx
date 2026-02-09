@@ -51,7 +51,7 @@ if (authorizedUsers.length === 0 && normalizedEmail !== 'admin@asmedu.org') {
 
     setTimeout(() => {
       // Emergency Admin Check
-      if (normalizedEmail === 'admin@asmedu.org' && password === 'admin123') {
+      if (normalizedEmail === 'admin@asmedu.org' && password === 'asm@123') {
         onLogin({
           id: 'admin001',
           name: 'Principal Admin',
