@@ -197,12 +197,11 @@ const UserManagement: React.FC<UserManagementProps> = ({
   };
 
   const openAddForm = () => {
-    const isHighLevel = activeTab === 'members';
     setFormData({
       name: '',
       email: '',
       role: activeTab === 'students' ? UserRole.STUDENT : UserRole.FACULTY,
-      department: isHighLevel ? 'All Departments' : (availableDepartments[0] || 'All Departments'),
+      department: activeTab === 'students' ? (availableDepartments[0] || 'Engineering') : 'All Departments',
       assignedCategory: GrievanceCategory.GENERAL,
       studentClass: ''
     });
