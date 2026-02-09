@@ -345,14 +345,11 @@ const UserManagement: React.FC<UserManagementProps> = ({
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
-              {availableRoles.filter(r => !Object.values(UserRole).includes(r as UserRole)).map(r => (
+              {availableRoles.map(r => (
                 <span key={r} className="bg-white border border-indigo-100 text-indigo-600 px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
                   {r}
                 </span>
               ))}
-              {availableRoles.length === Object.values(UserRole).length && (
-                 <span className="text-[10px] text-slate-400 italic">No custom roles defined.</span>
-              )}
             </div>
           </div>
 

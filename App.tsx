@@ -43,6 +43,7 @@ const App: React.FC = () => {
   const [members, setMembers] = useState<User[]>([]);
   const [students, setStudents] = useState<User[]>([]);
   const [departments, setDepartments] = useState<string[]>(['Engineering', 'Management', 'Pharmacy', 'MCA', 'BBA/BCA']);
+  const [customRoles, setCustomRoles] = useState<string[]>([]);
 
   const showToast = (message: string, type: ToastMessage['type'] = 'info') => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -65,6 +66,9 @@ const App: React.FC = () => {
       
       const savedDepts = localStorage.getItem('asm_departments');
       if (savedDepts) setDepartments(JSON.parse(savedDepts));
+      
+      const savedRoles = localStorage.getItem('asm_custom_roles');
+      if (savedRoles) setCustomRoles(JSON.parse(savedRoles));
       
       setTimeout(() => setIsDataLoaded(true), 800);
     };
@@ -148,8 +152,9 @@ const App: React.FC = () => {
       localStorage.setItem(STORAGE_KEYS.MEMBERS, JSON.stringify(members));
       localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
       localStorage.setItem('asm_departments', JSON.stringify(departments));
+      localStorage.setItem('asm_custom_roles', JSON.stringify(customRoles));
     }
-  }, [grievances, members, students, departments, isUsingFirebase, isDataLoaded]);
+  }, [grievances, members, students, departments, customRoles, isUsingFirebase, isDataLoaded]);
 
   // --- Handlers ---
 
@@ -424,8 +429,8 @@ const App: React.FC = () => {
           onRemoveUser={handleRemoveUser} 
           onBulkRemoveUser={handleBulkRemoveUser} 
           onUpdateUser={handleUpdateUser} 
-          availableRoles={Object.values(UserRole)} 
-          onAddRole={() => {}} 
+          availableRoles={[...Object.values(UserRole), ...customRoles]} 
+          onAddRole={(role) => setCustomRoles([...customRoles, role])} 
           availableDepartments={departments} 
           onAddDepartment={(dept) => setDepartments([...departments, dept])} 
           onRemoveDepartment={(dept) => setDepartments(departments.filter(d => d !== dept))} 
