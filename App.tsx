@@ -113,7 +113,26 @@ const App: React.FC = () => {
         setStudents(items);
       }, (err) => console.warn("Students cloud stream failed."));
 
-      unsubs = [unsubG, unsubM, unsubS];
+      // Sync departments from Firebase
+      const unsubD = onSnapshot(doc(db, "config", "departments"), (snap) => {
+        if (snap.exists()) {
+          setDepartments(snap.data().list || ['Engineering', 'Management', 'Pharmacy', 'MCA', 'BBA/BCA']);
+        } else {
+          setDepartments(['Engineering', 'Management', 'Pharmacy', 'MCA', 'BBA/BCA']);
+        }
+      }, (err) => {
+        console.warn("Departments sync failed.");
+        setDepartments(['Engineering', 'Management', 'Pharmacy', 'MCA', 'BBA/BCA']);
+      });
+
+      // Sync custom roles from Firebase
+      const unsubR = onSnapshot(doc(db, "config", "roles"), (snap) => {
+        if (snap.exists()) {
+          setCustomRoles(snap.data().list || []);
+        }
+      }, (err) => console.warn("Roles sync failed."));
+
+      unsubs = [unsubG, unsubM, unsubS, unsubD, unsubR];
     } else {
       switchToLocalMode();
     }
@@ -442,10 +461,28 @@ const App: React.FC = () => {
           onBulkRemoveUser={handleBulkRemoveUser} 
           onUpdateUser={handleUpdateUser} 
           availableRoles={[...Object.values(UserRole), ...customRoles]} 
-          onAddRole={(role) => setCustomRoles([...customRoles, role])} 
+          onAddRole={async (role) => {
+            const newRoles = [...customRoles, role];
+            setCustomRoles(newRoles);
+            if (isUsingFirebase && db) {
+              await setDoc(doc(db, "config", "roles"), { list: newRoles });
+            }
+          }} 
           availableDepartments={departments} 
-          onAddDepartment={(dept) => setDepartments([...departments, dept])} 
-          onRemoveDepartment={(dept) => setDepartments(departments.filter(d => d !== dept))} 
+          onAddDepartment={async (dept) => {
+            const newDepts = [...departments, dept];
+            setDepartments(newDepts);
+            if (isUsingFirebase && db) {
+              await setDoc(doc(db, "config", "departments"), { list: newDepts });
+            }
+          }} 
+          onRemoveDepartment={async (dept) => {
+            const newDepts = departments.filter(d => d !== dept);
+            setDepartments(newDepts);
+            if (isUsingFirebase && db) {
+              await setDoc(doc(db, "config", "departments"), { list: newDepts });
+            }
+          }} 
         />
       )}
       {activeTab === 'new' && user.role === UserRole.STUDENT && (
