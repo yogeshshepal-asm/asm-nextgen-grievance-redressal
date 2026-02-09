@@ -248,22 +248,18 @@ const App: React.FC = () => {
   const handleUpdateUser = async (u: User) => {
     if (isUsingFirebase && db) {
       try {
-        const collections = ["students", "members"];
-        for (const col of collections) {
-          const q = query(collection(db, col), where("email", "==", u.email));
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            const docRef = doc(db, col, snap.docs[0].id);
-            await updateDoc(docRef, { ...u });
-            showToast("Cloud record updated.", "success");
-            // Update current user if editing own profile
-            if (user && user.email === u.email) {
-              setUser({ ...user, ...u });
-            }
-            return;
-          }
+        const col = u.role === UserRole.STUDENT ? "students" : "members";
+        // Use setDoc with merge to create or update
+        await setDoc(doc(db, col, u.id), u, { merge: true });
+        showToast("Profile updated successfully!", "success");
+        // Update current user if editing own profile
+        if (user && user.email === u.email) {
+          setUser({ ...user, ...u });
         }
-      } catch (e) { showToast("Cloud update failed.", "error"); }
+      } catch (e: any) { 
+        console.error("Update error:", e);
+        showToast(`Update failed: ${e.message}", "error"); 
+      }
     } else {
       if (u.role === UserRole.STUDENT) setStudents(prev => prev.map(s => s.id === u.id ? u : s));
       else setMembers(prev => prev.map(m => m.id === u.id ? u : m));
