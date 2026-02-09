@@ -234,7 +234,10 @@ const App: React.FC = () => {
         const col = u.role === UserRole.STUDENT ? "students" : "members";
         await setDoc(doc(db, col, u.id), u);
         showToast(`${u.name} synced to cloud.`, "success");
-      } catch (e) { showToast("Sync failed.", "error"); }
+      } catch (e: any) { 
+        console.error("Add user error:", e);
+        showToast(`Sync failed: ${e.message || 'Unknown error'}`, "error"); 
+      }
     } else {
       if (u.role === UserRole.STUDENT) setStudents([...students, u]);
       else setMembers([...members, u]);
