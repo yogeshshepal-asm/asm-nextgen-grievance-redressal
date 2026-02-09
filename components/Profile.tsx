@@ -58,6 +58,11 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateProfile }) => {
     setSuccess('Profile updated successfully!');
     setIsEditing(false);
     setFormData({ ...formData, currentPassword: '', newPassword: '', confirmPassword: '' });
+    
+    // Force page refresh after 1 second to show updated data
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   return (
