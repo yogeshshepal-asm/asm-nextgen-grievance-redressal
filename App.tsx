@@ -42,7 +42,7 @@ const App: React.FC = () => {
   const [grievances, setGrievances] = useState<Grievance[]>([]);
   const [members, setMembers] = useState<User[]>([]);
   const [students, setStudents] = useState<User[]>([]);
-  const [departments, setDepartments] = useState<string[]>(['Engineering', 'Management', 'Pharmacy', 'MCA', 'BBA/BCA']);
+  const [departments, setDepartments] = useState<string[]>([]);
   const [customRoles, setCustomRoles] = useState<string[]>([]);
 
   const showToast = (message: string, type: ToastMessage['type'] = 'info') => {
@@ -65,7 +65,11 @@ const App: React.FC = () => {
       setStudents(savedS ? JSON.parse(savedS) : []);
       
       const savedDepts = localStorage.getItem('asm_departments');
-      if (savedDepts) setDepartments(JSON.parse(savedDepts));
+      if (savedDepts) {
+        setDepartments(JSON.parse(savedDepts));
+      } else {
+        setDepartments(['Engineering', 'Management', 'Pharmacy', 'MCA', 'BBA/BCA']);
+      }
       
       const savedRoles = localStorage.getItem('asm_custom_roles');
       if (savedRoles) setCustomRoles(JSON.parse(savedRoles));
