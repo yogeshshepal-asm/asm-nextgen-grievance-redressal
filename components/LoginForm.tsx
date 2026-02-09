@@ -50,19 +50,6 @@ if (authorizedUsers.length === 0 && normalizedEmail !== 'admin@asmedu.org') {
     setIsLoading(true);
 
     setTimeout(() => {
-      // Emergency Admin Check
-      if (normalizedEmail === 'admin@asmedu.org' && password === 'asm@123') {
-        onLogin({
-          id: 'admin001',
-          name: 'Principal Admin',
-          email: 'admin@asmedu.org',
-          role: UserRole.ADMIN,
-          department: 'Administration'
-        });
-        setIsLoading(false);
-        return;
-      }
-
       const foundUser = authorizedUsers.find(u => u.email?.toLowerCase() === normalizedEmail);
 
       if (!foundUser) {
