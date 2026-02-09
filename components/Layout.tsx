@@ -140,10 +140,10 @@ const Layout: React.FC<LayoutProps> = ({
               )}
             </div>
             <div className="flex items-center space-x-3 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-100">
-              <div className="w-6 h-6 rounded-lg bg-[#71bf44] flex items-center justify-center text-white text-[10px] font-black uppercase">{userRole.charAt(0)}</div>
+              <div className="w-6 h-6 rounded-lg bg-[#71bf44] flex items-center justify-center text-white text-[10px] font-black uppercase">{userRole?.charAt(0) || 'U'}</div>
               <div className="flex flex-col">
                 {userName && <span className="text-[10px] font-bold text-slate-700">{userName}</span>}
-                <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">{userRole}</span>
+                <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">{userRole || 'User'}</span>
               </div>
             </div>
           </div>
