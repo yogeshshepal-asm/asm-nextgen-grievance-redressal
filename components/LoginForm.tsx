@@ -52,6 +52,8 @@ if (authorizedUsers.length === 0 && normalizedEmail !== 'admin@asmedu.org') {
     setTimeout(() => {
       const foundUser = authorizedUsers.find(u => u.email?.toLowerCase() === normalizedEmail);
 
+      console.log('Login attempt:', { email: normalizedEmail, role, foundUser });
+
       if (!foundUser) {
         setError('No active record found. Please contact IT Cell for registration.');
         setIsLoading(false);
@@ -60,11 +62,15 @@ if (authorizedUsers.length === 0 && normalizedEmail !== 'admin@asmedu.org') {
 
       const userPassword = foundUser.password || 'asm@123';
 
+      console.log('Password check:', { entered: password, stored: userPassword, match: password === userPassword });
+
       if (password !== userPassword) {
         setError('Incorrect security key. Try again or reset.');
         setIsLoading(false);
         return;
       }
+
+      console.log('Role check:', { selected: role, userRole: foundUser.role, match: foundUser.role === role });
 
       if (foundUser.role !== role) {
         setError(`Access Denied: Your account is registered as ${(foundUser.role || 'Unknown').toUpperCase()}.`);
