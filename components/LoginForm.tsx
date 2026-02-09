@@ -78,13 +78,7 @@ if (authorizedUsers.length === 0 && normalizedEmail !== 'admin@asmedu.org') {
         return;
       }
 
-      if (password === 'asm@123') {
-        setPendingUser(foundUser);
-        setView('force_change');
-        setIsLoading(false);
-        return;
-      }
-
+      // Skip force password change for now
       onLogin(foundUser);
       setIsLoading(false);
     }, 1000);
