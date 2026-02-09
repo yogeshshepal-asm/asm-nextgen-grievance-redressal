@@ -43,7 +43,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
     name: '',
     email: '',
     role: UserRole.FACULTY as string,
-    department: availableDepartments[0] || 'Engineering',
+    department: 'All Departments',
     assignedCategory: GrievanceCategory.GENERAL,
     studentClass: ''
   });
@@ -180,11 +180,12 @@ const UserManagement: React.FC<UserManagementProps> = ({
   };
 
   const resetForm = () => {
+    const isHighLevel = [UserRole.REGISTRAR, UserRole.PRINCIPAL, UserRole.DEAN, UserRole.PRESIDENT, UserRole.ADMIN].includes(formData.role as UserRole);
     setFormData({ 
       name: '', 
       email: '', 
       role: activeTab === 'students' ? UserRole.STUDENT : UserRole.FACULTY,
-      department: availableDepartments[0] || 'Engineering', 
+      department: isHighLevel ? 'All Departments' : (availableDepartments[0] || 'All Departments'), 
       assignedCategory: GrievanceCategory.GENERAL, 
       studentClass: '' 
     });
@@ -194,11 +195,12 @@ const UserManagement: React.FC<UserManagementProps> = ({
   };
 
   const openAddForm = () => {
+    const isHighLevel = activeTab === 'members';
     setFormData({
       name: '',
       email: '',
       role: activeTab === 'students' ? UserRole.STUDENT : UserRole.FACULTY,
-      department: availableDepartments[0] || 'Engineering',
+      department: isHighLevel ? 'All Departments' : (availableDepartments[0] || 'All Departments'),
       assignedCategory: GrievanceCategory.GENERAL,
       studentClass: ''
     });
@@ -551,12 +553,18 @@ const UserManagement: React.FC<UserManagementProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Department</label>
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                Department {[UserRole.REGISTRAR, UserRole.PRINCIPAL, UserRole.DEAN, UserRole.PRESIDENT, UserRole.ADMIN].includes(formData.role as UserRole) && '(Optional)'}
+              </label>
               <select 
                 className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-[#1a73b8] outline-none transition-all font-medium"
                 value={formData.department}
                 onChange={(e) => setFormData({...formData, department: e.target.value})}
+                required={![UserRole.REGISTRAR, UserRole.PRINCIPAL, UserRole.DEAN, UserRole.PRESIDENT, UserRole.ADMIN].includes(formData.role as UserRole)}
               >
+                {[UserRole.REGISTRAR, UserRole.PRINCIPAL, UserRole.DEAN, UserRole.PRESIDENT, UserRole.ADMIN].includes(formData.role as UserRole) && (
+                  <option value="All Departments">All Departments</option>
+                )}
                 {availableDepartments.map(dept => (
                   <option key={dept} value={dept}>{dept}</option>
                 ))}
