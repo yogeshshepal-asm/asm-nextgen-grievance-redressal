@@ -63,7 +63,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
         return;
       }
 
-      const foundUser = authorizedUsers.find(u => u.email.toLowerCase() === normalizedEmail);
+      const foundUser = authorizedUsers.find(u => u.email?.toLowerCase() === normalizedEmail);
 
       if (!foundUser) {
         setError('No active record found. Please contact IT Cell for registration.');
@@ -80,7 +80,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
       }
 
       if (foundUser.role !== role) {
-        setError(`Access Denied: Your account is registered as ${foundUser.role.toUpperCase()}.`);
+        setError(`Access Denied: Your account is registered as ${(foundUser.role || 'Unknown').toUpperCase()}.`);
         setIsLoading(false);
         return;
       }
