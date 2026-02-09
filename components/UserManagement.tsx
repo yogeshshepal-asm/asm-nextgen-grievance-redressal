@@ -689,7 +689,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
                     <td className="px-8 py-5">
                       <div className="flex items-center space-x-4">
                         <div className="w-10 h-10 rounded-2xl bg-[#1a73b8]/5 border border-[#1a73b8]/10 flex items-center justify-center text-[#1a73b8] font-black text-sm group-hover:scale-110 transition-transform">
-                          {user.name.charAt(0)}
+                          {user.name?.charAt(0) || 'U'}
                         </div>
                         <div>
                           <div className="text-sm font-black text-slate-900">{user.name}</div>
