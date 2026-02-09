@@ -16,7 +16,7 @@ if (isGeminiEnabled) {
 
 // Mock analysis for local development without API key
 const mockAnalysis = (description: string, subject: string) => {
-  const keywords = description.toLowerCase() + ' ' + subject.toLowerCase();
+  const keywords = (description || '').toLowerCase() + ' ' + (subject || '').toLowerCase();
   
   let category = 'General';
   if (keywords.includes('exam') || keywords.includes('marks') || keywords.includes('faculty') || keywords.includes('course')) category = 'Academic';
@@ -31,7 +31,7 @@ const mockAnalysis = (description: string, subject: string) => {
   return {
     category,
     priority,
-    summary: subject.substring(0, 60),
+    summary: (subject || 'No subject').substring(0, 60),
     sentiment,
     suggestedAction: `Review and address the ${category.toLowerCase()} concern promptly.`
   };
