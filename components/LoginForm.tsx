@@ -26,32 +26,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [pendingUser, setPendingUser] = useState<User | null>(null);
-  const [recaptchaReady, setRecaptchaReady] = useState(false);
-  const [recaptchaWidgetId, setRecaptchaWidgetId] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
-      setRecaptchaReady(true);
-      return;
-    }
-
-    window.onRecaptchaLoad = () => {
-      setRecaptchaReady(true);
-    };
-
-    if (window.grecaptcha && window.grecaptcha.render) {
-      setRecaptchaReady(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (recaptchaReady && import.meta.env.VITE_RECAPTCHA_SITE_KEY && !recaptchaWidgetId) {
-      const widgetId = window.grecaptcha.render('recaptcha-container', {
-        sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY
-      });
-      setRecaptchaWidgetId(widgetId);
-    }
-  }, [recaptchaReady, recaptchaWidgetId]);
 
   const validateEmail = (email: string) => {
     return email.toLowerCase().endsWith('@asmedu.org');
@@ -68,16 +42,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
       return;
     }
 
-    // Verify reCAPTCHA v2 if enabled
-    if (import.meta.env.VITE_RECAPTCHA_SITE_KEY && recaptchaWidgetId !== null) {
-      const response = window.grecaptcha.getResponse(recaptchaWidgetId);
-      if (!response) {
-        setError('Please complete the reCAPTCHA verification.');
-        return;
-      }
-    }
-
-    if (authorizedUsers.length === 0 && normalizedEmail !== 'admin@asmedu.org') {
+if (authorizedUsers.length === 0 && normalizedEmail !== 'admin@asmedu.org') {
       setError('System is still synchronizing the campus directory. Please wait a moment.');
       return;
     }
@@ -183,11 +148,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
             <input type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-[#1a73b8]/5 focus:bg-white transition-all outline-none text-sm font-medium" />
           </div>
 
-          {import.meta.env.VITE_RECAPTCHA_SITE_KEY && (
-            <div className="flex justify-center">
-              <div id="recaptcha-container"></div>
-            </div>
-          )}
 
           <button type="submit" disabled={isLoading} className="w-full bg-[#1a73b8] text-white py-5 rounded-[2.5rem] font-black uppercase tracking-[0.3em] text-[10px] hover:bg-[#1a5da1] shadow-xl transition-all disabled:opacity-50">
             {isLoading ? 'Authenticating...' : 'Enter Secure Portal'}
