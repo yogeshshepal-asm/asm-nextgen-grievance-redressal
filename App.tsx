@@ -39,8 +39,7 @@ const MOCK_GRIEVANCES: Grievance[] = [
 ];
 
 const INITIAL_MEMBERS: User[] = [
-  { id: 'fac001', name: 'Prof. Amrita Sharma', email: 'amrita.s@asmedu.org', role: UserRole.FACULTY, department: 'Computer Science', assignedCategory: GrievanceCategory.ACADEMIC, password: 'asm@123' },
-  { id: 'admin001', name: 'Principal Admin', email: 'admin@asmedu.org', role: UserRole.ADMIN, department: 'Administration', password: 'asm@123' }
+  // Initial users will be created via "Seed Cloud Directory" button or added through User Management
 ];
 
 const STORAGE_KEYS = {
@@ -136,20 +135,27 @@ const App: React.FC = () => {
       showToast("Initializing Cloud Collections...", "info");
       const batch = writeBatch(db);
       
-      // Seed Members
-      INITIAL_MEMBERS.forEach(m => {
-        const ref = doc(db, "members", m.id);
-        batch.set(ref, m);
-      });
+      // Create default admin user
+      const defaultAdmin: User = {
+        id: 'admin001',
+        name: 'System Administrator',
+        email: 'admin@asmedu.org',
+        role: UserRole.ADMIN,
+        department: 'Administration',
+        password: 'asm@123'
+      };
+      
+      const adminRef = doc(db, "members", defaultAdmin.id);
+      batch.set(adminRef, defaultAdmin);
 
       // Seed mock grievance to verify connection
       const gRef = doc(collection(db, "grievances"));
       batch.set(gRef, MOCK_GRIEVANCES[0]);
 
       await batch.commit();
-      showToast("Cloud Setup Complete! Portal is ready.", "success");
+      showToast("Cloud Setup Complete! Login with admin@asmedu.org / asm@123", "success");
       setDbError(null);
-      setTimeout(() => window.location.reload(), 1000);
+      setTimeout(() => window.location.reload(), 2000);
     } catch (e: any) {
       showToast(`Bootstrap Failed: ${e.message}`, "error");
       console.error(e);

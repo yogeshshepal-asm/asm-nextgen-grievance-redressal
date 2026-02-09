@@ -44,7 +44,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
     return email.toLowerCase().endsWith('@asmedu.org');
   };
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+  const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -53,6 +53,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
     if (!validateEmail(normalizedEmail)) {
       setError('Invalid domain. Please use your official @asmedu.org ID.');
       return;
+    }
+
+    // Verify reCAPTCHA v2 if enabled
+    if (import.meta.env.VITE_RECAPTCHA_SITE_KEY && window.grecaptcha) {
+      const response = window.grecaptcha.getResponse();
+      if (!response) {
+        setError('Please complete the reCAPTCHA verification.');
+        return;
+      }
     }
 
     if (authorizedUsers.length === 0 && normalizedEmail !== 'admin@asmedu.org') {
@@ -160,6 +169,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Security Key</label>
             <input type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-[#1a73b8]/5 focus:bg-white transition-all outline-none text-sm font-medium" />
           </div>
+
+          {import.meta.env.VITE_RECAPTCHA_SITE_KEY && (
+            <div className="flex justify-center">
+              <div className="g-recaptcha" data-sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}></div>
+            </div>
+          )}
 
           <button type="submit" disabled={isLoading} className="w-full bg-[#1a73b8] text-white py-5 rounded-[2.5rem] font-black uppercase tracking-[0.3em] text-[10px] hover:bg-[#1a5da1] shadow-xl transition-all disabled:opacity-50">
             {isLoading ? 'Authenticating...' : 'Enter Secure Portal'}
