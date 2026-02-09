@@ -16,27 +16,7 @@ import {
 } from "firebase/firestore";
 import { User, Grievance, UserRole, GrievanceStatus, GrievanceCategory, AppNotification, ToastMessage, Reply } from './types.ts';
 
-const MOCK_GRIEVANCES: Grievance[] = [
-  {
-    id: 'GRV-782',
-    userId: 'std001',
-    userName: 'Rajesh Kumar',
-    userRole: UserRole.STUDENT,
-    subject: 'Wifi connection issues in Hostel B',
-    description: 'The wifi connection in Hostel B, room 302, has been extremely unstable for the last 4 days.',
-    category: GrievanceCategory.INFRASTRUCTURE,
-    priority: 'High',
-    status: GrievanceStatus.IN_PROGRESS,
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-    updatedAt: new Date().toISOString(),
-    replies: [],
-    aiInsights: {
-      sentiment: 'Negative',
-      summary: 'Critical internet instability in hostel.',
-      suggestedAction: 'Deploy IT technician.'
-    }
-  }
-];
+const MOCK_GRIEVANCES: Grievance[] = [];
 
 const INITIAL_MEMBERS: User[] = [
   // Initial users will be created via "Seed Cloud Directory" button or added through User Management
@@ -78,7 +58,7 @@ const App: React.FC = () => {
       const savedM = localStorage.getItem(STORAGE_KEYS.MEMBERS);
       const savedS = localStorage.getItem(STORAGE_KEYS.STUDENTS);
       
-      setGrievances(savedG ? JSON.parse(savedG) : MOCK_GRIEVANCES);
+      setGrievances(savedG ? JSON.parse(savedG) : []);
       setMembers(savedM ? JSON.parse(savedM) : INITIAL_MEMBERS);
       setStudents(savedS ? JSON.parse(savedS) : []);
       
@@ -92,7 +72,7 @@ const App: React.FC = () => {
       
       const unsubG = onSnapshot(qGrievances, (snap) => {
         const items = snap.docs.map(doc => ({ ...doc.data(), id: doc.id } as Grievance));
-        setGrievances(items.length ? items : MOCK_GRIEVANCES);
+        setGrievances(items);
         setIsDataLoaded(true);
         setDbError(null);
       }, (err: any) => {
@@ -147,10 +127,6 @@ const App: React.FC = () => {
       
       const adminRef = doc(db, "members", defaultAdmin.id);
       batch.set(adminRef, defaultAdmin);
-
-      // Seed mock grievance to verify connection
-      const gRef = doc(collection(db, "grievances"));
-      batch.set(gRef, MOCK_GRIEVANCES[0]);
 
       await batch.commit();
       showToast("Cloud Setup Complete! Login with admin@asmedu.org / asm@123", "success");
