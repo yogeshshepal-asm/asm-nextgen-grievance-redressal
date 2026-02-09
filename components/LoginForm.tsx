@@ -27,17 +27,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
   const [showPassword, setShowPassword] = useState(false);
   const [pendingUser, setPendingUser] = useState<User | null>(null);
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const [recaptchaReady, setRecaptchaReady] = useState(false);
 
   useEffect(() => {
-    // Load reCAPTCHA
-    const loadRecaptcha = () => {
-      if (window.grecaptcha) {
+    if (!import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
+      setRecaptchaReady(true);
+      return;
+    }
+
+    const checkRecaptcha = setInterval(() => {
+      if (window.grecaptcha && window.grecaptcha.render) {
+        clearInterval(checkRecaptcha);
         window.grecaptcha.ready(() => {
-          console.log('reCAPTCHA loaded');
+          setRecaptchaReady(true);
         });
       }
-    };
-    loadRecaptcha();
+    }, 100);
+
+    return () => clearInterval(checkRecaptcha);
   }, []);
 
   const validateEmail = (email: string) => {
@@ -170,7 +177,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
             <input type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-[#1a73b8]/5 focus:bg-white transition-all outline-none text-sm font-medium" />
           </div>
 
-          {import.meta.env.VITE_RECAPTCHA_SITE_KEY && (
+          {import.meta.env.VITE_RECAPTCHA_SITE_KEY && recaptchaReady && (
             <div className="flex justify-center">
               <div className="g-recaptcha" data-sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}></div>
             </div>
