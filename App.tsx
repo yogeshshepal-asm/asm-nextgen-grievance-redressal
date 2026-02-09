@@ -256,6 +256,10 @@ const App: React.FC = () => {
             const docRef = doc(db, col, snap.docs[0].id);
             await updateDoc(docRef, { ...u });
             showToast("Cloud record updated.", "success");
+            // Update current user if editing own profile
+            if (user && user.email === u.email) {
+              setUser({ ...user, ...u });
+            }
             return;
           }
         }
@@ -263,6 +267,10 @@ const App: React.FC = () => {
     } else {
       if (u.role === UserRole.STUDENT) setStudents(prev => prev.map(s => s.id === u.id ? u : s));
       else setMembers(prev => prev.map(m => m.id === u.id ? u : m));
+      // Update current user if editing own profile
+      if (user && user.email === u.email) {
+        setUser({ ...user, ...u });
+      }
     }
   };
 
@@ -444,7 +452,10 @@ const App: React.FC = () => {
         <GrievanceForm onSubmit={handleAddGrievance} user={user} />
       )}
       {activeTab === 'profile' && (
-        <Profile user={user} onUpdateProfile={handleUpdateUser} />
+        <Profile 
+          user={user} 
+          onUpdateProfile={(updates) => handleUpdateUser({ ...user, ...updates })} 
+        />
       )}
     </Layout>
   );
