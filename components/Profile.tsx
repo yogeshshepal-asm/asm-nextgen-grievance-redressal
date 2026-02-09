@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from '../types';
 
 interface ProfileProps {
@@ -19,6 +19,19 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateProfile }) => {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Update formData when user prop changes
+  useEffect(() => {
+    setFormData({
+      name: user.name,
+      email: user.email,
+      department: user.department,
+      studentClass: user.studentClass || '',
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+  }, [user]);
 
   const handleSave = () => {
     setError('');
