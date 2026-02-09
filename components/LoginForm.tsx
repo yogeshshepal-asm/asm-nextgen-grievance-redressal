@@ -26,12 +26,25 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [pendingUser, setPendingUser] = useState<User | null>(null);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Load reCAPTCHA
+    const loadRecaptcha = () => {
+      if (window.grecaptcha) {
+        window.grecaptcha.ready(() => {
+          console.log('reCAPTCHA loaded');
+        });
+      }
+    };
+    loadRecaptcha();
+  }, []);
 
   const validateEmail = (email: string) => {
     return email.toLowerCase().endsWith('@asmedu.org');
   };
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -40,6 +53,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
     if (!validateEmail(normalizedEmail)) {
       setError('Invalid domain. Please use your official @asmedu.org ID.');
       return;
+    }
+
+    // Verify reCAPTCHA
+    const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+    if (siteKey && window.grecaptcha) {
+      try {
+        const token = await window.grecaptcha.execute(siteKey, { action: 'login' });
+        setRecaptchaToken(token);
+      } catch (err) {
+        setError('Security verification failed. Please refresh and try again.');
+        return;
+      }
     }
 
     if (authorizedUsers.length === 0 && normalizedEmail !== 'admin@asmedu.org') {
@@ -152,6 +177,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
             {isLoading ? 'Authenticating...' : 'Enter Secure Portal'}
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-[8px] text-slate-400 font-medium">
+            This site is protected by reCAPTCHA and the Google{' '}
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#1a73b8] hover:underline">Privacy Policy</a> and{' '}
+            <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="text-[#1a73b8] hover:underline">Terms of Service</a> apply.
+          </p>
+        </div>
 
         <div className="mt-12 pt-8 border-t border-slate-50 text-center">
           <p className="text-[8px] text-slate-400 font-bold uppercase tracking-[0.2em]">Authorized Campus Governance Access Only</p>
