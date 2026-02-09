@@ -399,7 +399,7 @@ const App: React.FC = () => {
         ))}
       </div>
 
-      <div className="fixed bottom-4 left-4 z-50 flex items-center space-x-2 bg-white/80 backdrop-blur px-3 py-1.5 rounded-full border border-slate-200 shadow-sm">
+      <div className="fixed bottom-4 left-4 z-40 flex items-center space-x-2 bg-white/80 backdrop-blur px-3 py-1.5 rounded-full border border-slate-200 shadow-sm md:left-72">
         <div className={`w-2 h-2 rounded-full ${isUsingFirebase && !dbError ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-amber-500 animate-pulse'}`}></div>
         <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
           {isUsingFirebase && !dbError ? 'Connected: ASM Cloud' : 'Standby: Offline Access'}
