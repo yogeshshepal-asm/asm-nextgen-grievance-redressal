@@ -258,7 +258,7 @@ const App: React.FC = () => {
         }
       } catch (e: any) { 
         console.error("Update error:", e);
-        showToast(`Update failed: ${e.message}", "error"); 
+        showToast(`Update failed: ${e.message}`, "error"); 
       }
     } else {
       if (u.role === UserRole.STUDENT) setStudents(prev => prev.map(s => s.id === u.id ? u : s));
