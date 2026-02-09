@@ -26,8 +26,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [pendingUser, setPendingUser] = useState<User | null>(null);
-  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const [recaptchaReady, setRecaptchaReady] = useState(false);
+  const [recaptchaWidgetId, setRecaptchaWidgetId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
@@ -35,17 +35,23 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
       return;
     }
 
-    const checkRecaptcha = setInterval(() => {
-      if (window.grecaptcha && window.grecaptcha.render) {
-        clearInterval(checkRecaptcha);
-        window.grecaptcha.ready(() => {
-          setRecaptchaReady(true);
-        });
-      }
-    }, 100);
+    window.onRecaptchaLoad = () => {
+      setRecaptchaReady(true);
+    };
 
-    return () => clearInterval(checkRecaptcha);
+    if (window.grecaptcha && window.grecaptcha.render) {
+      setRecaptchaReady(true);
+    }
   }, []);
+
+  useEffect(() => {
+    if (recaptchaReady && import.meta.env.VITE_RECAPTCHA_SITE_KEY && !recaptchaWidgetId) {
+      const widgetId = window.grecaptcha.render('recaptcha-container', {
+        sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY
+      });
+      setRecaptchaWidgetId(widgetId);
+    }
+  }, [recaptchaReady, recaptchaWidgetId]);
 
   const validateEmail = (email: string) => {
     return email.toLowerCase().endsWith('@asmedu.org');
@@ -63,8 +69,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
     }
 
     // Verify reCAPTCHA v2 if enabled
-    if (import.meta.env.VITE_RECAPTCHA_SITE_KEY && window.grecaptcha) {
-      const response = window.grecaptcha.getResponse();
+    if (import.meta.env.VITE_RECAPTCHA_SITE_KEY && recaptchaWidgetId !== null) {
+      const response = window.grecaptcha.getResponse(recaptchaWidgetId);
       if (!response) {
         setError('Please complete the reCAPTCHA verification.');
         return;
@@ -177,9 +183,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onPasswordChange, author
             <input type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-[#1a73b8]/5 focus:bg-white transition-all outline-none text-sm font-medium" />
           </div>
 
-          {import.meta.env.VITE_RECAPTCHA_SITE_KEY && recaptchaReady && (
+          {import.meta.env.VITE_RECAPTCHA_SITE_KEY && (
             <div className="flex justify-center">
-              <div className="g-recaptcha" data-sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}></div>
+              <div id="recaptcha-container"></div>
             </div>
           )}
 
