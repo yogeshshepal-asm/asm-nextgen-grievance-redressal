@@ -69,14 +69,14 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateProfile }) => {
               {user.name?.charAt(0) || 'U'}
             </div>
             <div>
-              <h2 className="text-2xl font-black tracking-tight">{user.name}</h2>
-              <p className="text-sm font-bold text-white/80 mt-1">{user.email}</p>
+              <h2 className="text-2xl font-black tracking-tight">{formData.name}</h2>
+              <p className="text-sm font-bold text-white/80 mt-1">{formData.email}</p>
               <div className="flex items-center space-x-2 mt-2">
                 <span className="px-3 py-1 bg-white/20 backdrop-blur rounded-lg text-xs font-black uppercase tracking-widest">
                   {user.role}
                 </span>
                 <span className="px-3 py-1 bg-white/20 backdrop-blur rounded-lg text-xs font-bold">
-                  {user.department}
+                  {formData.department}
                 </span>
               </div>
             </div>
@@ -107,13 +107,13 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateProfile }) => {
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#1a73b8] outline-none"
                 />
               ) : (
-                <p className="text-base font-bold text-slate-900">{user.name}</p>
+                <p className="text-base font-bold text-slate-900">{formData.name}</p>
               )}
             </div>
 
             <div className="space-y-2">
               <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Email Address</label>
-              <p className="text-base font-bold text-slate-900">{user.email}</p>
+              <p className="text-base font-bold text-slate-900">{formData.email}</p>
               <p className="text-xs text-slate-400">Email cannot be changed</p>
             </div>
 
@@ -127,7 +127,7 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateProfile }) => {
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#1a73b8] outline-none"
                 />
               ) : (
-                <p className="text-base font-bold text-slate-900">{user.department}</p>
+                <p className="text-base font-bold text-slate-900">{formData.department}</p>
               )}
             </div>
 
@@ -148,7 +148,7 @@ const Profile: React.FC<ProfileProps> = ({ user, onUpdateProfile }) => {
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#1a73b8] outline-none"
                   />
                 ) : (
-                  <p className="text-base font-bold text-slate-900">{user.studentClass}</p>
+                  <p className="text-base font-bold text-slate-900">{formData.studentClass}</p>
                 )}
               </div>
             )}
