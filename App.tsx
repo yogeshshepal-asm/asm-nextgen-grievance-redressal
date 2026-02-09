@@ -232,7 +232,11 @@ const App: React.FC = () => {
     if (isUsingFirebase && db) {
       try {
         const col = u.role === UserRole.STUDENT ? "students" : "members";
-        await setDoc(doc(db, col, u.id), u);
+        // Remove undefined fields
+        const cleanUser = Object.fromEntries(
+          Object.entries(u).filter(([_, v]) => v !== undefined)
+        );
+        await setDoc(doc(db, col, u.id), cleanUser);
         showToast(`${u.name} synced to cloud.`, "success");
       } catch (e: any) { 
         console.error("Add user error:", e);
@@ -248,10 +252,12 @@ const App: React.FC = () => {
     if (isUsingFirebase && db) {
       try {
         const col = u.role === UserRole.STUDENT ? "students" : "members";
-        // Use setDoc with merge to create or update
-        await setDoc(doc(db, col, u.id), u, { merge: true });
+        // Remove undefined fields
+        const cleanUser = Object.fromEntries(
+          Object.entries(u).filter(([_, v]) => v !== undefined)
+        );
+        await setDoc(doc(db, col, u.id), cleanUser, { merge: true });
         showToast("Profile updated successfully!", "success");
-        // Update current user if editing own profile
         if (user && user.email === u.email) {
           setUser({ ...user, ...u });
         }
@@ -262,7 +268,6 @@ const App: React.FC = () => {
     } else {
       if (u.role === UserRole.STUDENT) setStudents(prev => prev.map(s => s.id === u.id ? u : s));
       else setMembers(prev => prev.map(m => m.id === u.id ? u : m));
-      // Update current user if editing own profile
       if (user && user.email === u.email) {
         setUser({ ...user, ...u });
       }
