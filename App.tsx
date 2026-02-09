@@ -8,6 +8,7 @@ import UserManagement from './components/UserManagement.tsx';
 import LoginForm from './components/LoginForm.tsx';
 import LandingPage from './components/LandingPage.tsx';
 import Logo from './components/Logo.tsx';
+import Profile from './components/Profile.tsx';
 import { db, useFirebase } from './services/firebase.ts';
 import { 
   collection, onSnapshot, query, orderBy, addDoc, updateDoc, 
@@ -441,6 +442,9 @@ const App: React.FC = () => {
       )}
       {activeTab === 'new' && user.role === UserRole.STUDENT && (
         <GrievanceForm onSubmit={handleAddGrievance} user={user} />
+      )}
+      {activeTab === 'profile' && (
+        <Profile user={user} onUpdateProfile={handleUpdateUser} />
       )}
     </Layout>
   );
