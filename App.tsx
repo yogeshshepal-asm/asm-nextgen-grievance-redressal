@@ -42,6 +42,7 @@ const App: React.FC = () => {
   const [grievances, setGrievances] = useState<Grievance[]>([]);
   const [members, setMembers] = useState<User[]>([]);
   const [students, setStudents] = useState<User[]>([]);
+  const [departments, setDepartments] = useState<string[]>(['Engineering', 'Management', 'Pharmacy', 'MCA', 'BBA/BCA']);
 
   const showToast = (message: string, type: ToastMessage['type'] = 'info') => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -61,6 +62,9 @@ const App: React.FC = () => {
       setGrievances(savedG ? JSON.parse(savedG) : []);
       setMembers(savedM ? JSON.parse(savedM) : INITIAL_MEMBERS);
       setStudents(savedS ? JSON.parse(savedS) : []);
+      
+      const savedDepts = localStorage.getItem('asm_departments');
+      if (savedDepts) setDepartments(JSON.parse(savedDepts));
       
       setTimeout(() => setIsDataLoaded(true), 800);
     };
@@ -143,8 +147,9 @@ const App: React.FC = () => {
       localStorage.setItem(STORAGE_KEYS.GRIEVANCES, JSON.stringify(grievances));
       localStorage.setItem(STORAGE_KEYS.MEMBERS, JSON.stringify(members));
       localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+      localStorage.setItem('asm_departments', JSON.stringify(departments));
     }
-  }, [grievances, members, students, isUsingFirebase, isDataLoaded]);
+  }, [grievances, members, students, departments, isUsingFirebase, isDataLoaded]);
 
   // --- Handlers ---
 
@@ -421,9 +426,9 @@ const App: React.FC = () => {
           onUpdateUser={handleUpdateUser} 
           availableRoles={Object.values(UserRole)} 
           onAddRole={() => {}} 
-          availableDepartments={['Engineering', 'Management', 'Pharmacy', 'MCA', 'BBA/BCA']} 
-          onAddDepartment={() => {}} 
-          onRemoveDepartment={() => {}} 
+          availableDepartments={departments} 
+          onAddDepartment={(dept) => setDepartments([...departments, dept])} 
+          onRemoveDepartment={(dept) => setDepartments(departments.filter(d => d !== dept))} 
         />
       )}
       {activeTab === 'new' && user.role === UserRole.STUDENT && (
