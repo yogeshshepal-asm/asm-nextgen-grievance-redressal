@@ -110,6 +110,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
     } else {
       const newUser: User = {
         id: `${formData.role === UserRole.STUDENT ? 'std' : 'usr'}-${Math.random().toString(36).substr(2, 5)}`,
+        password: 'asm@123',
         ...userPayload
       };
       onAddUser(newUser);
@@ -152,7 +153,8 @@ const UserManagement: React.FC<UserManagementProps> = ({
         email,
         role: UserRole.STUDENT,
         studentClass: studentClass || '',
-        department: finalDept
+        department: finalDept,
+        password: 'asm@123'
       });
       addedCount++;
     });
