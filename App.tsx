@@ -251,10 +251,13 @@ const App: React.FC = () => {
     if (isUsingFirebase && db) {
       try {
         const col = u.role === UserRole.STUDENT ? "students" : "members";
+        // Ensure password is set
+        const userWithPassword = { ...u, password: u.password || 'asm@123' };
         // Remove undefined fields
         const cleanUser = Object.fromEntries(
-          Object.entries(u).filter(([_, v]) => v !== undefined)
+          Object.entries(userWithPassword).filter(([_, v]) => v !== undefined)
         );
+        console.log('Saving user:', cleanUser);
         await setDoc(doc(db, col, u.id), cleanUser);
         showToast(`${u.name} synced to cloud.`, "success");
       } catch (e: any) { 
