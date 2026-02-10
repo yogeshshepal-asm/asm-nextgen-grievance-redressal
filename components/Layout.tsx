@@ -54,6 +54,7 @@ const Layout: React.FC<LayoutProps> = ({
             { id: 'grievances', label: isManagement ? 'All Cases' : userRole === UserRole.FACULTY ? 'Cell Queue' : 'My Cases', roles: 'all' },
             { id: 'members', label: 'Campus Users', roles: [UserRole.ADMIN] },
             { id: 'workflow', label: 'Workflow Rules', roles: [UserRole.ADMIN] },
+                        { id: 'analytics', label: 'Analytics', roles: [UserRole.ADMIN, UserRole.HOD, UserRole.DEAN, UserRole.PRINCIPAL] },
             { id: 'new', label: 'New Grievance', roles: [UserRole.STUDENT] },
             { id: 'profile', label: 'My Account', roles: 'all' }
           ]

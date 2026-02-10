@@ -104,9 +104,10 @@ export class WorkflowAutomationEngine {
     notifications: AppNotification[];
   } {
     const notifications: AppNotification[] = [];
-    let updatedGrievance = {
+    let updatedGrievance: Grievance = {
       ...grievance,
-      appliedRules: [...(grievance.appliedRules || []), rule.id]
+      appliedRules: [...(grievance.appliedRules || []), rule.id],
+      tags: grievance.tags || []
     };
     let assignedTo = currentAssignedTo;
 

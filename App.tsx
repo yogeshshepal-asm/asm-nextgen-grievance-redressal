@@ -11,6 +11,7 @@ import Logo from './components/Logo.tsx';
 import Profile from './components/Profile.tsx';
 import WorkflowRules from './components/WorkflowRules.tsx';
 import { db, useFirebase } from './services/firebase.ts';
+import AnalyticsInsights from './components/AnalyticsInsights.tsx';
 import WorkflowAutomationEngine from './services/workflowEngine.ts';
 import DEFAULT_WORKFLOW_RULES from './constants/defaultWorkflowRules.ts';
 import { 
@@ -621,6 +622,15 @@ const App: React.FC = () => {
           onUpdateRule={handleUpdateWorkflowRule}
           onDeleteRule={handleDeleteWorkflowRule}
           onToggleRule={handleToggleWorkflowRule}
+              {activeTab === 'analytics' && [UserRole.ADMIN, UserRole.HOD, UserRole.DEAN, UserRole.PRINCIPAL].includes(user.role as UserRole) && (
+                <div className="p-8">
+                  <div className="mb-6">
+                    <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tight">Analytics & Insights</h1>
+                    <p className="text-sm text-slate-500 mt-2">Real-time grievance analytics, sentiment trends, and resolution predictions</p>
+                  </div>
+                  <AnalyticsInsights grievances={filteredGrievances} />
+                </div>
+              )}
         />
       )}
       {activeTab === 'new' && user.role === UserRole.STUDENT && (
