@@ -171,7 +171,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 relative z-0">
       {/* Search and Filter Bar */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between relative z-0">
         <div className="relative w-full md:w-96">
@@ -286,7 +286,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-visible">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-visible relative z-10">
         <div className="overflow-x-auto overflow-y-visible">
           <table className="w-full text-left relative">
             <thead className="bg-slate-50 border-b border-slate-200">
