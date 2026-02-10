@@ -79,6 +79,12 @@ export interface Grievance {
     summary: string;
     suggestedAction: string;
   };
+  // Workflow automation fields
+  workflowPhases?: WorkflowPhase[];
+  escalationCount?: number;
+  lastEscalatedAt?: string;
+  appliedRules?: string[]; // IDs of rules that matched
+  tags?: string[];
 }
 
 export interface User {
@@ -90,10 +96,64 @@ export interface User {
   assignedCategory?: GrievanceCategory;
   studentClass?: string;
   password?: string;
+  workloadCount?: number; // Track current workload for load balancing
 }
 
 export interface ToastMessage {
   id: string;
   message: string;
   type: 'success' | 'error' | 'info';
+}
+
+// Workflow Automation Types
+export type RuleConditionOperator = 'equals' | 'contains' | 'includes' | 'greaterThan' | 'lessThan';
+
+export interface RuleCondition {
+  field: 'category' | 'priority' | 'department' | 'userRole' | 'daysUnresolved';
+  operator: RuleConditionOperator;
+  value: string | string[];
+}
+
+export interface RuleAction {
+  type: 'assign' | 'escalate' | 'notify' | 'setPriority' | 'addTag';
+  targetUserId?: string;
+  targetRole?: string;
+  value?: string;
+  notifyEmail?: boolean;
+}
+
+export interface WorkflowRule {
+  id: string;
+  name: string;
+  description?: string;
+  enabled: boolean;
+  priority: number; // Lower number = higher priority
+  conditions: RuleCondition[]; // All conditions must match (AND logic)
+  actions: RuleAction[];
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: string;
+}
+
+export interface EscalationPolicy {
+  id: string;
+  name: string;
+  enabled: boolean;
+  escalationChain: Array<{
+    hoursBeforeEscalation: number;
+    targetRole: string;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WorkflowPhase {
+  assignedTo?: {
+    id: string;
+    name: string;
+    email?: string;
+  };
+  assignedAt?: string;
+  escalationCount?: number;
+  lastEscalatedAt?: string;
 }

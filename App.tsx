@@ -9,12 +9,14 @@ import LoginForm from './components/LoginForm.tsx';
 import LandingPage from './components/LandingPage.tsx';
 import Logo from './components/Logo.tsx';
 import Profile from './components/Profile.tsx';
+import WorkflowRules from './components/WorkflowRules.tsx';
 import { db, useFirebase } from './services/firebase.ts';
+import WorkflowAutomationEngine from './services/workflowEngine.ts';
 import { 
   collection, onSnapshot, query, orderBy, addDoc, updateDoc, 
   doc, deleteDoc, writeBatch, getDocs, where, setDoc 
 } from "firebase/firestore";
-import { User, Grievance, UserRole, GrievanceStatus, GrievanceCategory, AppNotification, ToastMessage, Reply } from './types.ts';
+import { User, Grievance, UserRole, GrievanceStatus, GrievanceCategory, AppNotification, ToastMessage, Reply, WorkflowRule } from './types.ts';
 
 const MOCK_GRIEVANCES: Grievance[] = [];
 
@@ -26,7 +28,8 @@ const STORAGE_KEYS = {
   GRIEVANCES: 'asm_grievances',
   MEMBERS: 'asm_members',
   STUDENTS: 'asm_students',
-  USER: 'asm_current_user'
+  USER: 'asm_current_user',
+  WORKFLOW_RULES: 'asm_workflow_rules'
 };
 
 const App: React.FC = () => {
@@ -48,6 +51,7 @@ const App: React.FC = () => {
   const [students, setStudents] = useState<User[]>([]);
   const [departments, setDepartments] = useState<string[]>([]);
   const [customRoles, setCustomRoles] = useState<string[]>([]);
+  const [workflowRules, setWorkflowRules] = useState<WorkflowRule[]>([]);
 
   const showToast = (message: string, type: ToastMessage['type'] = 'info') => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -63,10 +67,12 @@ const App: React.FC = () => {
       const savedG = localStorage.getItem(STORAGE_KEYS.GRIEVANCES);
       const savedM = localStorage.getItem(STORAGE_KEYS.MEMBERS);
       const savedS = localStorage.getItem(STORAGE_KEYS.STUDENTS);
+      const savedRules = localStorage.getItem(STORAGE_KEYS.WORKFLOW_RULES);
       
       setGrievances(savedG ? JSON.parse(savedG) : []);
       setMembers(savedM ? JSON.parse(savedM) : INITIAL_MEMBERS);
       setStudents(savedS ? JSON.parse(savedS) : []);
+      setWorkflowRules(savedRules ? JSON.parse(savedRules) : []);
       
       const savedDepts = localStorage.getItem('asm_departments');
       if (savedDepts) {
@@ -75,8 +81,8 @@ const App: React.FC = () => {
         setDepartments(['Engineering', 'Management', 'Pharmacy', 'MCA', 'BBA/BCA']);
       }
       
-      const savedRoles = localStorage.getItem('asm_custom_roles');
-      if (savedRoles) setCustomRoles(JSON.parse(savedRoles));
+      const savedRolesCustom = localStorage.getItem('asm_custom_roles');
+      if (savedRolesCustom) setCustomRoles(JSON.parse(savedRolesCustom));
       
       setTimeout(() => setIsDataLoaded(true), 800);
     };
@@ -136,7 +142,13 @@ const App: React.FC = () => {
         }
       }, (err) => console.warn("Roles sync failed."));
 
-      unsubs = [unsubG, unsubM, unsubS, unsubD, unsubR];
+      // Sync workflow rules from Firebase
+      const unsubWR = onSnapshot(collection(db, "workflowRules"), (snap) => {
+        const items = snap.docs.map(doc => ({ ...doc.data(), id: doc.id } as WorkflowRule));
+        setWorkflowRules(items);
+      }, (err) => console.warn("Workflow rules sync failed."));
+
+      unsubs = [unsubG, unsubM, unsubS, unsubD, unsubR, unsubWR];
     } else {
       switchToLocalMode();
     }
@@ -180,27 +192,51 @@ const App: React.FC = () => {
       localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
       localStorage.setItem('asm_departments', JSON.stringify(departments));
       localStorage.setItem('asm_custom_roles', JSON.stringify(customRoles));
+      localStorage.setItem(STORAGE_KEYS.WORKFLOW_RULES, JSON.stringify(workflowRules));
     }
-  }, [grievances, members, students, departments, customRoles, isUsingFirebase, isDataLoaded]);
+  }, [grievances, members, students, departments, customRoles, workflowRules, isUsingFirebase, isDataLoaded]);
 
   // --- Handlers ---
 
   const handleAddGrievance = async (g: any) => {
-    // Auto-assign to matching cell lead
-    const cellLead = members.find(m => m.assignedCategory === g.category);
+    // Apply workflow automation rules
+    const { grievance: processedGrievance, assignedTo, notifications } = 
+      WorkflowAutomationEngine.applyWorkflowRules(workflowRules, g, [...members, ...students]);
+
+    // If no rule-based assignment, try load balancing
+    let finalAssignedTo = assignedTo;
+    if (!finalAssignedTo) {
+      const eligible = WorkflowAutomationEngine.getEligibleAssignees(processedGrievance, [...members, ...students]);
+      const leastBusy = WorkflowAutomationEngine.findLeastBusyMember(eligible, grievances);
+      if (leastBusy) {
+        finalAssignedTo = {
+          id: leastBusy.id,
+          name: leastBusy.name,
+          email: leastBusy.email
+        };
+      }
+    }
+
     const grievanceWithAssignment = {
-      ...g,
-      assignedTo: cellLead ? { id: cellLead.id, name: cellLead.name, email: cellLead.email } : undefined
+      ...processedGrievance,
+      assignedTo: finalAssignedTo
     };
+
+    // Add notifications from workflow
+    if (notifications.length > 0) {
+      setNotifications(prev => [...prev, ...notifications]);
+    }
 
     if (isUsingFirebase && db) {
       try {
         await addDoc(collection(db, "grievances"), grievanceWithAssignment);
-        showToast(`Case synced with cloud${cellLead ? ` and assigned to ${cellLead.name}` : ''}`, "success");
+        const assigneeMsg = finalAssignedTo ? ` and assigned to ${finalAssignedTo.name}` : '';
+        showToast(`Case synced with cloud${assigneeMsg}`, "success");
       } catch (e) { showToast("Cloud write failed.", "error"); }
     } else {
       setGrievances([grievanceWithAssignment, ...grievances]);
-      showToast(`Logged to local cache${cellLead ? ` and assigned to ${cellLead.name}` : ''}`, "info");
+      const assigneeMsg = finalAssignedTo ? ` and assigned to ${finalAssignedTo.name}` : '';
+      showToast(`Logged to local cache${assigneeMsg}`, "info");
     }
   };
 
@@ -334,6 +370,69 @@ const App: React.FC = () => {
     } else {
       setStudents(prev => prev.filter(u => !ids.includes(u.id)));
       setMembers(prev => prev.filter(u => !ids.includes(u.id)));
+    }
+  };
+
+  // --- Workflow Rules Handlers ---
+
+  const handleAddWorkflowRule = async (rule: WorkflowRule) => {
+    if (isUsingFirebase && db) {
+      try {
+        await setDoc(doc(db, "workflowRules", rule.id), rule);
+        showToast(`Rule "${rule.name}" created successfully`, "success");
+      } catch (e) {
+        showToast("Failed to create rule", "error");
+      }
+    } else {
+      setWorkflowRules(prev => [...prev, rule]);
+      showToast(`Rule "${rule.name}" created successfully`, "success");
+    }
+  };
+
+  const handleUpdateWorkflowRule = async (rule: WorkflowRule) => {
+    if (isUsingFirebase && db) {
+      try {
+        await setDoc(doc(db, "workflowRules", rule.id), rule, { merge: true });
+        showToast(`Rule "${rule.name}" updated successfully`, "success");
+      } catch (e) {
+        showToast("Failed to update rule", "error");
+      }
+    } else {
+      setWorkflowRules(prev => prev.map(r => r.id === rule.id ? rule : r));
+      showToast(`Rule "${rule.name}" updated successfully`, "success");
+    }
+  };
+
+  const handleDeleteWorkflowRule = async (ruleId: string) => {
+    if (isUsingFirebase && db) {
+      try {
+        await deleteDoc(doc(db, "workflowRules", ruleId));
+        showToast("Rule deleted successfully", "success");
+      } catch (e) {
+        showToast("Failed to delete rule", "error");
+      }
+    } else {
+      setWorkflowRules(prev => prev.filter(r => r.id !== ruleId));
+      showToast("Rule deleted successfully", "success");
+    }
+  };
+
+  const handleToggleWorkflowRule = async (ruleId: string, enabled: boolean) => {
+    const rule = workflowRules.find(r => r.id === ruleId);
+    if (!rule) return;
+
+    const updatedRule = { ...rule, enabled };
+
+    if (isUsingFirebase && db) {
+      try {
+        await setDoc(doc(db, "workflowRules", ruleId), updatedRule, { merge: true });
+        showToast(`Rule ${enabled ? "enabled" : "disabled"}`, "success");
+      } catch (e) {
+        showToast("Failed to update rule", "error");
+      }
+    } else {
+      setWorkflowRules(prev => prev.map(r => r.id === ruleId ? updatedRule : r));
+      showToast(`Rule ${enabled ? "enabled" : "disabled"}`, "success");
     }
   };
 
@@ -501,6 +600,16 @@ const App: React.FC = () => {
               await setDoc(doc(db, "config", "departments"), { list: newDepts });
             }
           }} 
+        />
+      )}
+      {activeTab === 'workflow' && user.role === UserRole.ADMIN && (
+        <WorkflowRules
+          rules={workflowRules}
+          members={members}
+          onAddRule={handleAddWorkflowRule}
+          onUpdateRule={handleUpdateWorkflowRule}
+          onDeleteRule={handleDeleteWorkflowRule}
+          onToggleRule={handleToggleWorkflowRule}
         />
       )}
       {activeTab === 'new' && user.role === UserRole.STUDENT && (

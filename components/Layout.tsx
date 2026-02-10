@@ -53,6 +53,7 @@ const Layout: React.FC<LayoutProps> = ({
             { id: 'dashboard', label: 'Dashboard', roles: 'all' },
             { id: 'grievances', label: isManagement ? 'All Cases' : userRole === UserRole.FACULTY ? 'Cell Queue' : 'My Cases', roles: 'all' },
             { id: 'members', label: 'Campus Users', roles: [UserRole.ADMIN] },
+            { id: 'workflow', label: 'Workflow Rules', roles: [UserRole.ADMIN] },
             { id: 'new', label: 'New Grievance', roles: [UserRole.STUDENT] },
             { id: 'profile', label: 'My Account', roles: 'all' }
           ]
@@ -87,7 +88,7 @@ const Layout: React.FC<LayoutProps> = ({
         <header className="bg-white border-b border-slate-100 px-8 py-4 flex justify-between items-center shrink-0 shadow-sm z-10">
           <div className="flex flex-col">
             <h2 className="text-lg font-black text-slate-800 uppercase tracking-tight leading-tight">
-              {activeTab === 'members' ? 'User Directory' : activeTab.replace('-', ' ')}
+              {activeTab === 'members' ? 'User Directory' : activeTab === 'workflow' ? 'Workflow Rules' : activeTab.replace('-', ' ')}
             </h2>
             <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">ASM Campus Governance Portal</p>
           </div>
