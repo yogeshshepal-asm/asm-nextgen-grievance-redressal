@@ -12,11 +12,48 @@ interface CommonIssue {
 const COMMON_ISSUES: Record<string, CommonIssue[]> = {
   'Academic': [
     { label: 'ERP Login Issues', subject: 'Difficulty accessing ERP portal', template: 'I am unable to log in to my ERP account despite using correct credentials. I need access to check my internal marks and attendance.' },
-    { label: 'Study Material Missing', subject: 'Course materials not uploaded on portal', template: 'The notes for [Subject Name] have not been uploaded for the current semester.' },
+    { label: 'Study Material Missing', subject: 'Course materials not uploaded on portal', template: 'The notes and slides for [Subject Name] have not been uploaded for the current semester.' },
+    { label: 'Exam Schedule Issue', subject: 'Exam date/time conflict or error', template: 'There is a conflict in my exam schedule on [Date]. [Subject A] and [Subject B] are scheduled at the same time.' },
+    { label: 'Internal Assessment Marks', subject: 'Discrepancy in internal marks', template: 'I believe my internal marks for [Subject] are incorrect. My assessment answers were good but I received a low score.' },
+    { label: 'Faculty Absence', subject: 'Frequent faculty absence from classes', template: 'Our faculty member for [Subject] has been absent multiple times without notice, affecting our syllabus progress.' },
+    { label: 'Course Access Problem', subject: 'Cannot access course content', template: 'I am unable to access course materials and assignments for [Course Name] despite being enrolled.' },
   ],
   'Infrastructure': [
-    { label: 'Wifi Signal Weak', subject: 'Unstable Wifi connection in Hostel', template: 'The wifi signal in my room is very weak and keeps disconnecting.' },
-    { label: 'Canteen Hygiene', subject: 'Canteen cleanliness concern', template: 'I noticed issues with the cleanliness of the serving area today.' },
+    { label: 'Wifi Signal Weak', subject: 'Unstable Wifi connection', template: 'The wifi signal in my [Location] is very weak and keeps disconnecting frequently.' },
+    { label: 'Canteen Hygiene', subject: 'Canteen cleanliness concern', template: 'I noticed issues with the cleanliness of the serving area and food preparation environment.' },
+    { label: 'Lab Equipment Broken', subject: 'Non-functional lab equipment', template: 'Several equipment in [Lab Name] are not functioning properly, affecting our practical sessions.' },
+    { label: 'Classroom Maintenance', subject: 'Classroom cleanliness/maintenance issue', template: 'The classroom [Room Number] has poor ventilation, broken fans, and needs immediate cleaning.' },
+    { label: 'Water Supply Issue', subject: 'No drinking water available', template: 'The drinking water coolers in [Location] are not working, causing inconvenience to students.' },
+    { label: 'Library Infrastructure', subject: 'Library facility problem', template: 'The library air conditioning is not working properly and many fans/lights are non-functional.' },
+  ],
+  'Financial': [
+    { label: 'Fee Deduction Query', subject: 'Unexplained fee charge', template: 'I was charged an additional fee of Rs. [Amount] for [Purpose]. I do not understand why this charge was applied.' },
+    { label: 'Scholarship Delay', subject: 'Scholarship payment delayed', template: 'My scholarship for [Semester] has not been disbursed yet. Please provide the status of my application.' },
+    { label: 'Fee Refund Issue', subject: 'Pending refund request', template: 'I withdrew from [Course] and submitted a refund request on [Date]. The refund has not been processed.' },
+    { label: 'Scholarship Eligibility', subject: 'Query on scholarship eligibility', template: 'I would like to know if I am eligible for [Scholarship Type] and what documents are required.' },
+    { label: 'Receipt Missing', subject: 'Fee receipt not generated', template: 'I paid my fees on [Date] but did not receive a receipt or acknowledgment.' },
+  ],
+  'Administrative': [
+    { label: 'Certificate Delay', subject: 'Degree/Academic certificate pending', template: 'I completed my course in [Month/Year] but my certificate has not been issued yet.' },
+    { label: 'ID Card Not Issued', subject: 'Student ID card issue', template: 'I submitted my ID card application on [Date] and still have not received it.' },
+    { label: 'Document Authentication', subject: 'Certificate/Transcript authentication needed', template: 'I need an officially authenticated copy of my [Document] for [Purpose].' },
+    { label: 'Transcript Issue', subject: 'Academic transcript not generated', template: 'I requested my academic transcript but it has not been provided for [Reason].' },
+    { label: 'Name/Details Correction', subject: 'Error in official records', template: 'There is a spelling error in my name/details in the official records. It shows [Wrong Detail] instead of [Correct Detail].' },
+  ],
+  'Hostel': [
+    { label: 'Room Allocation Issue', subject: 'Hostel room allocation problem', template: 'I was not allocated a hostel room despite applying on time for [Semester].' },
+    { label: 'Room Maintenance', subject: 'Room condition inadequate', template: 'My hostel room has [Issue: broken window, leaking ceiling, etc.]. Please arrange repairs.' },
+    { label: 'Mess Food Quality', subject: 'Poor quality mess food', template: 'The quality and hygiene of mess food has deteriorated significantly. The food is often stale and unhygienic.' },
+    { label: 'Mess Bill Issue', subject: 'Discrepancy in mess charges', template: 'I was charged Rs. [Amount] for mess in [Month], but I was absent for [Days] days.' },
+    { label: 'Hostel Discipline', subject: 'Unfair hostel discipline action', template: 'I was penalized for [Reason] without proper investigation or hearing from the hostel warden.' },
+    { label: 'Security Concern', subject: 'Security issue in hostel', template: 'The hostel security gates are often left unattended, and unauthorized persons enter the premises.' },
+  ],
+  'General': [
+    { label: 'Unfair Evaluation', subject: 'Assessment seemed unfair', template: 'I believe my evaluation in [Subject/Activity] was not fair. The evaluation criteria were not clearly communicated.' },
+    { label: 'Bullying/Harassment', subject: 'Student bullying or workplace harassment', template: 'I have been experiencing [Type of harassment] from [Person/Group]. This has affected my mental health.' },
+    { label: 'Disability Support', subject: 'Lack of support for students with disabilities', template: 'As a student with [Disability], I am not receiving adequate support. I need [Required accommodation].' },
+    { label: 'Workload Concern', subject: 'Excessive academic workload', template: 'The amount of assignments and projects given is excessive and unrealistic to complete in the given time.' },
+    { label: 'Event Cancellation', subject: 'Unannounced event or class cancellation', template: '[Event/Class] was cancelled without prior notice at the last moment, causing inconvenience.' },
   ]
 };
 
