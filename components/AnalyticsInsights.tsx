@@ -27,6 +27,11 @@ const AnalyticsInsights: React.FC<AnalyticsInsightsProps> = ({ grievances }) => 
 
   const COLORS = ['#10b981', '#8b5cf6', '#ef4444', '#f59e0b'];
 
+  // Anonymize complainant names for privacy: show anonymous ordinal label
+  const anonymizeName = (_name: string | undefined, _userId: string | undefined, idx: number) => {
+    return `Complainant #${idx + 1}`;
+  };
+
   return (
     <div className="space-y-6">
       {/* Tab Navigation */}
@@ -183,7 +188,7 @@ const AnalyticsInsights: React.FC<AnalyticsInsightsProps> = ({ grievances }) => 
                         {idx + 1}
                       </div>
                       <div>
-                        <p className="font-semibold text-slate-900">{complainant.userName}</p>
+                        <p className="font-semibold text-slate-900">{anonymizeName(complainant.userName, complainant.userId, idx)}</p>
                         <p className="text-xs text-slate-500">{complainant.grievanceCount} cases</p>
                       </div>
                     </div>
