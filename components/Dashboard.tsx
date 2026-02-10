@@ -236,7 +236,7 @@ const Dashboard: React.FC<DashboardProps> = ({ grievances, user }) => {
             <div className="flex items-center justify-between mb-10">
               <div>
                 <h3 className="text-lg font-bold text-slate-900">Incident Distribution</h3>
-                <p className="text-xs text-slate-400 font-medium mt-1">Grievance volume across specialized технический cells.</p>
+                <p className="text-xs text-slate-400 font-medium mt-1">Grievance volume across specialized redressal cells.</p>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-indigo-600 rounded"></div>
