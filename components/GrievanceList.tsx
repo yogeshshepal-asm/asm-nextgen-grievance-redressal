@@ -173,7 +173,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
   return (
     <div className="space-y-4">
       {/* Search and Filter Bar */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between relative z-0">
         <div className="relative w-full md:w-96">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
