@@ -633,7 +633,6 @@ const App: React.FC = () => {
           <AnalyticsInsights grievances={filteredGrievances} />
         </div>
       )}
-      )}
       {activeTab === 'new' && user.role === UserRole.STUDENT && (
         <GrievanceForm onSubmit={handleAddGrievance} user={user} />
       )}
