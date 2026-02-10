@@ -289,7 +289,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead>
+            <thead className="relative z-10">
               <tr className="bg-slate-50 border-b border-slate-200">
                 {userRole === UserRole.ADMIN && (
                   <th className="px-6 py-4 w-10">
