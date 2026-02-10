@@ -286,8 +286,8 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-visible relative z-10">
-        <div className="overflow-x-auto overflow-y-visible">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-visible">
+        <div className="overflow-x-auto">
           <table className="w-full text-left relative">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr className="bg-slate-50 border-b border-slate-200">
@@ -336,7 +336,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                 <th className="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 relative">
+            <tbody className="divide-y divide-slate-100">
               {sortedAndFilteredGrievances.length === 0 ? (
                 <tr>
                   <td colSpan={userRole === UserRole.ADMIN ? 10 : 9} className="px-6 py-12 text-center text-slate-400">
