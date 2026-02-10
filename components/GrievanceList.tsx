@@ -336,7 +336,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                 <th className="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 relative">
               {sortedAndFilteredGrievances.length === 0 ? (
                 <tr>
                   <td colSpan={userRole === UserRole.ADMIN ? 10 : 9} className="px-6 py-12 text-center text-slate-400">
