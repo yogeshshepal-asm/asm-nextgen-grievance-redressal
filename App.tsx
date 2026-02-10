@@ -12,6 +12,7 @@ import Profile from './components/Profile.tsx';
 import WorkflowRules from './components/WorkflowRules.tsx';
 import { db, useFirebase } from './services/firebase.ts';
 import WorkflowAutomationEngine from './services/workflowEngine.ts';
+import DEFAULT_WORKFLOW_RULES from './constants/defaultWorkflowRules.ts';
 import { 
   collection, onSnapshot, query, orderBy, addDoc, updateDoc, 
   doc, deleteDoc, writeBatch, getDocs, where, setDoc 
@@ -72,7 +73,8 @@ const App: React.FC = () => {
       setGrievances(savedG ? JSON.parse(savedG) : []);
       setMembers(savedM ? JSON.parse(savedM) : INITIAL_MEMBERS);
       setStudents(savedS ? JSON.parse(savedS) : []);
-      setWorkflowRules(savedRules ? JSON.parse(savedRules) : []);
+      // Load saved rules or initialize with defaults
+      setWorkflowRules(savedRules ? JSON.parse(savedRules) : DEFAULT_WORKFLOW_RULES);
       
       const savedDepts = localStorage.getItem('asm_departments');
       if (savedDepts) {
@@ -145,8 +147,17 @@ const App: React.FC = () => {
       // Sync workflow rules from Firebase
       const unsubWR = onSnapshot(collection(db, "workflowRules"), (snap) => {
         const items = snap.docs.map(doc => ({ ...doc.data(), id: doc.id } as WorkflowRule));
-        setWorkflowRules(items);
-      }, (err) => console.warn("Workflow rules sync failed."));
+        // If no rules exist, initialize with defaults
+        if (items.length === 0) {
+          setWorkflowRules(DEFAULT_WORKFLOW_RULES);
+          console.log("📋 Initialized default workflow rules");
+        } else {
+          setWorkflowRules(items);
+        }
+      }, (err) => {
+        console.warn("Workflow rules sync failed.");
+        setWorkflowRules(DEFAULT_WORKFLOW_RULES);
+      });
 
       unsubs = [unsubG, unsubM, unsubS, unsubD, unsubR, unsubWR];
     } else {
