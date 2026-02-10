@@ -25,12 +25,16 @@ const INITIAL_MEMBERS: User[] = [
 const STORAGE_KEYS = {
   GRIEVANCES: 'asm_grievances',
   MEMBERS: 'asm_members',
-  STUDENTS: 'asm_students'
+  STUDENTS: 'asm_students',
+  USER: 'asm_current_user'
 };
 
 const App: React.FC = () => {
   const isUsingFirebase = useFirebase();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.USER);
+    return saved ? JSON.parse(saved) : null;
+  });
   const [showLogin, setShowLogin] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -383,7 +387,8 @@ const App: React.FC = () => {
   }
 
   const handleLogin = (u: User) => { 
-    setUser(u); 
+    setUser(u);
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(u));
     setShowLogin(false); 
     showToast(`Access granted: ${u.name}.`, 'success'); 
   };
@@ -413,7 +418,10 @@ const App: React.FC = () => {
   return (
     <Layout 
       userRole={user.role as UserRole} 
-      onLogout={() => setUser(null)} 
+      onLogout={() => {
+        setUser(null);
+        localStorage.removeItem(STORAGE_KEYS.USER);
+      }} 
       activeTab={activeTab} 
       setActiveTab={(tab) => { setActiveTab(tab); setSelectedGrievance(null); }}
       notifications={notifications}
