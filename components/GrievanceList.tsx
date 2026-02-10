@@ -1,6 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Grievance, GrievanceStatus, UserRole, GrievanceCategory } from '../types';
+import TooltipPortal from './TooltipPortal';
 
 interface GrievanceListProps {
   grievances: Grievance[];
@@ -371,38 +372,33 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                         <div className="text-sm font-medium text-slate-900 truncate max-w-[150px]" title={g.subject}>{g.subject}</div>
                       </td>
                       <td className="px-6 py-4 overflow-visible z-20 relative">
-                        <div className="relative group max-w-[160px] overflow-visible">
-                          <div 
-                            className="text-[11px] text-indigo-700 italic truncate bg-indigo-50/60 px-3 py-1.5 rounded-xl border border-indigo-100 flex items-center gap-2 hover:bg-indigo-100 transition-all duration-300 group-hover:shadow-sm"
-                          >
-                            <div className="relative flex h-3 w-3 shrink-0">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                              <svg className="relative inline-flex h-3 w-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1a1 1 0 112 0v1a1 1 0 11-2 0zM13.536 14.243a1 1 0 011.414 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707zM15.657 14.243a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707z" />
-                              </svg>
-                            </div>
-                            <span className="truncate">{g.aiInsights?.summary || 'Processing...'}</span>
-                          </div>
-                          
-                          {g.aiInsights?.summary && (
-                            <div className="absolute hidden group-hover:block z-[999999] w-72 p-4 bg-slate-900 text-white rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200 pointer-events-auto border border-white/10 ring-1 ring-black/5 top-full right-0 mt-2 backdrop-blur-sm">
-                              <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/10">
-                                <svg className="h-4 w-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clipRule="evenodd" />
-                                </svg>
-                                <span className="text-[10px] font-black uppercase tracking-[0.1em] text-indigo-300">Intelligent Brief</span>
+                        <div className="max-w-[160px]">
+                          {g.aiInsights?.summary ? (
+                            <TooltipPortal
+                              content={g.aiInsights.summary}
+                              sentiment={{
+                                sentiment: g.aiInsights.sentiment,
+                                dotColor: sentiment.dotColor,
+                                shadow: sentiment.shadow,
+                                bg: sentiment.bg,
+                                text: sentiment.text,
+                                border: sentiment.border
+                              }}
+                            >
+                              <div 
+                                className="text-[11px] text-indigo-700 italic truncate bg-indigo-50/60 px-3 py-1.5 rounded-xl border border-indigo-100 flex items-center gap-2 hover:bg-indigo-100 transition-all duration-300 shadow-sm"
+                              >
+                                <div className="relative flex h-3 w-3 shrink-0">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                  <svg className="relative inline-flex h-3 w-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1a1 1 0 112 0v1a1 1 0 11-2 0zM13.536 14.243a1 1 0 011.414 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707zM15.657 14.243a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707z" />
+                                  </svg>
+                                </div>
+                                <span className="truncate">{g.aiInsights?.summary}</span>
                               </div>
-                              <p className="text-[11px] leading-relaxed font-medium text-slate-100">
-                                {g.aiInsights.summary}
-                              </p>
-                              <div className="mt-3 flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${sentiment.dotColor} shadow-[0_0_8px] ${sentiment.shadow}`}></div>
-                                <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded ${sentiment.bg} ${sentiment.text} ${sentiment.border}`}>
-                                  {g.aiInsights.sentiment}
-                                </span>
-                              </div>
-                              <div className="absolute top-full right-0 border-8 border-transparent border-t-slate-900"></div>
-                            </div>
+                            </TooltipPortal>
+                          ) : (
+                            <div className="text-[11px] text-slate-400 italic px-3 py-1.5">Processing...</div>
                           )}
                         </div>
                       </td>
