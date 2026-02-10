@@ -68,7 +68,14 @@ const GrievanceDetail: React.FC<GrievanceDetailProps> = ({
     }
   };
 
-  const getProgressStep = (status: GrievanceStatus) => {
+  const getProgressStep = (status: GrievanceStatus, assignedTo?: any) => {
+    // If assigned to a cell lead, mark as at least step 1
+    if (assignedTo) {
+      if (status === GrievanceStatus.PENDING) return 1;
+      if (status === GrievanceStatus.IN_PROGRESS) return 2;
+      if (status === GrievanceStatus.RESOLVED || status === GrievanceStatus.REJECTED) return 3;
+    }
+    
     switch (status) {
       case GrievanceStatus.PENDING: return 0;
       case GrievanceStatus.IN_PROGRESS: return 2;
@@ -85,7 +92,7 @@ const GrievanceDetail: React.FC<GrievanceDetailProps> = ({
     { label: 'Decision', description: 'Final outcome declared' }
   ];
 
-  const currentStepIndex = getProgressStep(grievance.status);
+  const currentStepIndex = getProgressStep(grievance.status, grievance.assignedTo);
   const isRejected = grievance.status === GrievanceStatus.REJECTED;
 
   const getFileIcon = (fileName: string) => {
@@ -196,6 +203,12 @@ const GrievanceDetail: React.FC<GrievanceDetailProps> = ({
                   <span className="text-[8px] font-black text-slate-400 uppercase block">Priority</span>
                   <span className={`text-xs font-black ${grievance.priority === 'High' ? 'text-rose-600' : 'text-slate-900'}`}>{grievance.priority}</span>
                 </div>
+                {grievance.assignedTo && (
+                  <div className="bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-200">
+                    <span className="text-[8px] font-black text-indigo-600 uppercase block">Assigned To</span>
+                    <span className="text-xs font-bold text-indigo-900">{grievance.assignedTo.name}</span>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex flex-col md:items-end">

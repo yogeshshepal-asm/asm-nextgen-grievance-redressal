@@ -186,14 +186,21 @@ const App: React.FC = () => {
   // --- Handlers ---
 
   const handleAddGrievance = async (g: any) => {
+    // Auto-assign to matching cell lead
+    const cellLead = members.find(m => m.assignedCategory === g.category);
+    const grievanceWithAssignment = {
+      ...g,
+      assignedTo: cellLead ? { id: cellLead.id, name: cellLead.name, email: cellLead.email } : undefined
+    };
+
     if (isUsingFirebase && db) {
       try {
-        await addDoc(collection(db, "grievances"), g);
-        showToast("Case synced with cloud.", "success");
+        await addDoc(collection(db, "grievances"), grievanceWithAssignment);
+        showToast(`Case synced with cloud${cellLead ? ` and assigned to ${cellLead.name}` : ''}`, "success");
       } catch (e) { showToast("Cloud write failed.", "error"); }
     } else {
-      setGrievances([g, ...grievances]);
-      showToast("Logged to local cache.", "info");
+      setGrievances([grievanceWithAssignment, ...grievances]);
+      showToast(`Logged to local cache${cellLead ? ` and assigned to ${cellLead.name}` : ''}`, "info");
     }
   };
 

@@ -65,6 +65,11 @@ export interface Grievance {
   status: GrievanceStatus;
   createdAt: string;
   updatedAt: string;
+  assignedTo?: {
+    id: string;
+    name: string;
+    email?: string;
+  };
   replies?: Reply[];
   attachments?: Attachment[];
   rating?: number;
