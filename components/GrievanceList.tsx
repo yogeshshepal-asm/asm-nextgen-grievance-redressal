@@ -287,8 +287,8 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
       )}
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-visible">
-        <div className="overflow-x-auto overflow-y-visible">
-          <table className="w-full text-left relative z-0">
+        <div className="overflow-x-auto overflow-y-visible relative z-0">
+          <table className="w-full text-left relative">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr className="bg-slate-50 border-b border-slate-200">
                 {userRole === UserRole.ADMIN && (
@@ -336,7 +336,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                 <th className="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 overflow-visible">
+            <tbody className="divide-y divide-slate-100 overflow-visible relative z-0">
               {sortedAndFilteredGrievances.length === 0 ? (
                 <tr>
                   <td colSpan={userRole === UserRole.ADMIN ? 10 : 9} className="px-6 py-12 text-center text-slate-400">
@@ -370,8 +370,8 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-slate-900 truncate max-w-[150px]" title={g.subject}>{g.subject}</div>
                       </td>
-                      <td className="px-6 py-4 overflow-visible">
-                        <div className="relative group max-w-[160px] z-50 overflow-visible">
+                      <td className="px-6 py-4 overflow-visible z-20 relative">
+                        <div className="relative group max-w-[160px] overflow-visible">
                           <div 
                             className="text-[11px] text-indigo-700 italic truncate bg-indigo-50/60 px-3 py-1.5 rounded-xl border border-indigo-100 flex items-center gap-2 hover:bg-indigo-100 transition-all duration-300 group-hover:shadow-sm"
                           >
@@ -385,7 +385,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                           </div>
                           
                           {g.aiInsights?.summary && (
-                            <div className="absolute hidden group-hover:block z-[9999] w-72 p-4 bg-slate-900 text-white rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200 pointer-events-auto border border-white/10 ring-1 ring-black/5 top-full left-1/2 -translate-x-1/2 mt-2">
+                            <div className="absolute hidden group-hover:block z-[99999] w-72 p-4 bg-slate-900 text-white rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200 pointer-events-auto border border-white/10 ring-1 ring-black/5 top-full left-1/2 -translate-x-1/2 mt-2\">
                               <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/10">
                                 <svg className="h-4 w-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clipRule="evenodd" />
@@ -401,7 +401,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                                   {g.aiInsights.sentiment}
                                 </span>
                               </div>
-                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-slate-900"></div>
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
                             </div>
                           )}
                         </div>
