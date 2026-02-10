@@ -385,7 +385,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                           </div>
                           
                           {g.aiInsights?.summary && (
-                            <div className="fixed hidden group-hover:block z-[9999] w-72 p-4 bg-slate-900 text-white rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200 pointer-events-auto border border-white/10 ring-1 ring-black/5 top-12 left-1/2 -translate-x-1/2">
+                            <div className="absolute bottom-full left-0 mb-4 hidden group-hover:block z-50 w-72 p-4 bg-slate-900 text-white rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200 pointer-events-auto border border-white/10 ring-1 ring-black/5">
                               <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/10">
                                 <svg className="h-4 w-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clipRule="evenodd" />
@@ -401,6 +401,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                                   {g.aiInsights.sentiment}
                                 </span>
                               </div>
+                              <div className="absolute top-full left-6 border-8 border-transparent border-t-slate-900"></div>
                             </div>
                           )}
                         </div>
