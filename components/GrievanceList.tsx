@@ -286,8 +286,8 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-visible">
+        <div className="overflow-x-auto overflow-y-visible">
           <table className="w-full text-left">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr className="bg-slate-50 border-b border-slate-200">
@@ -370,8 +370,8 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-slate-900 truncate max-w-[150px]" title={g.subject}>{g.subject}</div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="relative group max-w-[160px] z-[100]">
+                      <td className="px-6 py-4 overflow-visible">
+                        <div className="relative group max-w-[160px]">
                           <div 
                             className="text-[11px] text-indigo-700 italic truncate bg-indigo-50/60 px-3 py-1.5 rounded-xl border border-indigo-100 flex items-center gap-2 hover:bg-indigo-100 transition-all duration-300 group-hover:shadow-sm"
                           >
