@@ -289,7 +289,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-visible">
         <div className="overflow-x-auto overflow-y-visible">
           <table className="w-full text-left relative">
-            <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-0">
+            <thead className="bg-slate-50 border-b border-slate-200">
               <tr className="bg-slate-50 border-b border-slate-200">
                 {userRole === UserRole.ADMIN && (
                   <th className="px-6 py-4 w-10">
@@ -370,8 +370,8 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-slate-900 truncate max-w-[150px]" title={g.subject}>{g.subject}</div>
                       </td>
-                      <td className="px-6 py-4 relative z-50">
-                        <div className="relative group max-w-[160px]">
+                      <td className="px-6 py-4">
+                        <div className="relative group max-w-[160px] z-[9999]">
                           <div 
                             className="text-[11px] text-indigo-700 italic truncate bg-indigo-50/60 px-3 py-1.5 rounded-xl border border-indigo-100 flex items-center gap-2 hover:bg-indigo-100 transition-all duration-300 group-hover:shadow-sm"
                           >
@@ -385,7 +385,7 @@ const GrievanceList: React.FC<GrievanceListProps> = ({ grievances, userRole, onS
                           </div>
                           
                           {g.aiInsights?.summary && (
-                            <div className="absolute bottom-full left-0 mb-4 hidden group-hover:block z-[100] w-72 p-4 bg-slate-900 text-white rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200 pointer-events-none border border-white/10 ring-1 ring-black/5">
+                            <div className="absolute bottom-full left-0 mb-4 hidden group-hover:block z-[9999] w-72 p-4 bg-slate-900 text-white rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 duration-200 pointer-events-none border border-white/10 ring-1 ring-black/5">
                               <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/10">
                                 <svg className="h-4 w-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clipRule="evenodd" />
